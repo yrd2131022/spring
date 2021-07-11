@@ -1,0 +1,70 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context 
+	http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/aop 
+	http://www.springframework.org/schema/aop/spring-aop.xsd
+	">
+	
+	
+	<!-- 注解的组件扫描 -->
+	<context:component-scan
+		base-package="com.yrd.spring.aop_xml.aop_aspectj_anno"></context:component-scan>
+		
+	<!-- 很重要 -->
+	<!-- aop 自动代理 注解方式，需要添加如下代码 -->
+	<!-- 启动基于注解的声明式 AspectJ 支持 -->
+	<aop:aspectj-autoproxy />
+
+	<!-- 目标对象 -->
+	<bean id="target"
+		class="com.yrd.spring.aop_xml.aop_aspectj.Target"></bean>
+
+	<!-- 切面对象 ,只有配置了<aop:aspect ref="myAspect">后，这个bean才是切面对象 -->
+	<bean id="myAspect"
+		class="com.yrd.spring.aop_xml.aop_aspectj.MyAspect"></bean>
+
+
+	<!-- 配置织入：告诉spring框架，哪些方法（切点）需要进行哪些增强（前置、后置。。。） -->
+	<!-- 切点表达式：execution(【修饰符】 返回值类型 包名.类名.方法名(参数)) -->
+	<!-- 返回值类型、包名、类名、方法名可以使用星号*代表任意 -->
+	<!-- 包名与类名之间一个点.代表当前包下的类，两个点..表示当前包及其子包下的类 -->
+	<!-- 参数列表可以使用两个点..表示任意个数，任意类型的参数列表 -->
+	<aop:config>
+		<!-- 声明切面 -->
+		<aop:aspect ref="myAspect">
+			<!-- 抽取切点表达式 -->
+			<aop:pointcut
+				expression="execution(* com.yrd.spring.aop_xml.aop_aspectj.*.*(..))"
+				id="myPointcut" />
+			<!-- 切面：切点+通知：<aop:before method="before"告诉spring，before是前置增强方法 -->
+			<!-- <aop:before method="before" -->
+			<!-- pointcut="execution(public void com.yrd.spring.aop_xml.aop_aspectj.Target.save())" 
+				/> -->
+			<!-- <aop:before method="before" -->
+			<!-- pointcut="execution(* com.yrd.spring.aop_xml.aop_aspectj.*.*(..))" 
+				/> -->
+			<!-- <aop:around method="around" -->
+			<!-- pointcut="execution(* com.yrd.spring.aop_xml.aop_aspectj.*.*(..))" 
+				/> -->
+			<!-- <aop:after-throwing method="afterThrowing" -->
+			<!-- pointcut="execution(* com.yrd.spring.aop_xml.aop_aspectj.*.*(..))" 
+				/> -->
+			<!-- <aop:after method="after" -->
+			<!-- pointcut="execution(* com.yrd.spring.aop_xml.aop_aspectj.*.*(..))" 
+				/> -->
+			<aop:around method="around" pointcut-ref="myPointcut" />
+		</aop:aspect>
+	</aop:config>
+
+
+
+
+
+
+</beans>

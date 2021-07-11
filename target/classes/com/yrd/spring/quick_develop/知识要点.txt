@@ -1,0 +1,97 @@
+spring开发步骤：
+	1.导入坐标
+	2.创建Bean
+	3.创建配置文件，什么名字都可以。默认applicationContext.xml
+	4.在配置文件中进行配置
+	5.创建ApplicationContext对象getBean
+
+1.Bean标签基本配置
+	用于配置对象交由Spring来创建
+	默认情况下它调用的是类中的 “无参构造函数”，如果没有无参构造函数，则不能创建成功。
+	
+	基本属性：
+	id：Bean实例在Spring容器中的唯一标识
+	class：Bean的全限定名称（com.yrd.spring.quick_develop.dao.impl.UserDaoImpl）
+
+2.Bean标签范围配置
+	scope:指对象的作用范围，取值如下：
+		singleton：默认值，单例的 
+			 (加载配置文件时，Bean就被创建了)
+			 当应用加载，创建容器时，对象就被创建了。
+			 只要容器在，对象一直活着。
+			 当应用卸载，销毁容器时，对象才销毁。
+	
+		prototype：多例的
+			（每次getBean时，Bean就被创建一次）
+			当使用对象时，创建新的对象实例。
+			只要对象在使用中，就一直活着。
+			当对象长时间不用时，被java的垃圾回收器回收。
+		
+		request：WEB项目中，Spring创建一个Bean的对象，将对象存入到request域中
+		session：WEB项目中，Spring创建一个Bean的对象，将对象存入到session域中
+		global session：WEB项目中，应用在Portlet环境，如果没有Portlet环境那么global session 相当于 session
+	
+3.Bean生命周期配置
+	init-method：指定类中的初始化方法名称
+	destroy-method：指定类中的销毁方法名称
+	
+	
+4.Bean实例化三种方式
+	无参“构造”方法实例化
+	工厂“静态”方法实例化
+	工厂“实例”方法实例化
+	
+	
+5.Bean的依赖注入方式
+怎么将UserDao怎样注入到UserService内部呢？
+	1.构造方法
+	2.set方法
+	
+6.Bean的依赖注入的数据类型
+	1.普通数据类型
+	2.引用数据类型
+	3.集合数据类型
+	
+	
+7.引入其他配置文件（分模块开发）
+实际开发中，Spring的配置内容非常多，这就导致Spring配置很繁杂且体积很大，
+所以，可以将部分配置拆解到其他配置文件中，而在Spring主配置文件，通过import标签进行加载。
+
+<property>标签：属性注入
+name属性：属性名称
+value属性：注入的普通属性值
+ref属性：注入的对象引用值
+。。。等
+
+8.ApplicationContext的实现类
+	1.ClassPathXmlApplicationContext
+	它是从类的根路径下加载配置文件，推荐使用这种
+	2.FileSystemXmlApplicationContext
+	它是从磁盘路径上加载配置文件，配置文件可以在磁盘的任意位置
+	3.AnnotationConfigApplicationContext
+	当使用注解配置容器对象时，需要使用此类来创建spring容器。它用来读取注解
+	
+9.spring的重点API
+	ApplicationContext app = new ClasspathXmlApplicationContext("xml文件")
+	app.getBean("id")
+	app.getBean(Class)
+	
+	
+	
+	
+
+
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+		
+	
+	
+	

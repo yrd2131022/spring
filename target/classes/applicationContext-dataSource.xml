@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	
+	http://www.springframework.org/schema/context 
+	http://www.springframework.org/schema/context/spring-context.xsd
+	
+	http://www.springframework.org/schema/tx 
+	http://www.springframework.org/schema/tx/spring-tx.xsd
+	http://www.springframework.org/schema/aop 
+	http://www.springframework.org/schema/aop/spring-aop.xsd
+	">
+
+	<!-- 1.加载外部的jdbc.properties配置文件 -->
+	<context:property-placeholder
+		location="classpath:jdbc.properties" />
+
+	<!-- 2. 配置数据源 -->
+	<bean id="dataSource"
+		class="com.alibaba.druid.pool.DruidDataSource">
+		<property name="driverClassName" value="${jdbc.driver}"></property>
+		<property name="url" value="${jdbc.url}"></property>
+		<property name="username" value="${jdbc.username}"></property>
+		<property name="password" value="${jdbc.password}"></property>
+	</bean>
+
+	<!-- 3.配置 JDBC 模板 -->
+	<bean id="jdbcTemplate"
+		class="org.springframework.jdbc.core.JdbcTemplate">
+		<!-- 默认必须使用数据源 -->
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+
+
+
+
+
+	<!--============= 以下是测试实例=============== -->
+	<!-- 使用注解的事务管理需要组件扫描 -->
+	<context:component-scan base-package="com.yrd.spring.jdbc_transaction.transaction_anno"/>
+	<!-- 事务的注解驱动 -->
+	<tx:annotation-driven/>
+	
+<!-- 	<bean id="accountDao_anno" -->
+<!-- 		class="com.yrd.spring.jdbc_transaction.transaction_anno.dao.impl.AccountDaoImpl"> -->
+<!-- 		<property name="jdbcTemplate" ref="jdbcTemplate"></property> -->
+<!-- 	</bean> -->
+<!-- 	<bean id="accountService_anno" -->
+<!-- 		class="com.yrd.spring.jdbc_transaction.transaction_anno.service.impl.AccountServiceImpl"> -->
+<!-- 		<property name="accountDao" ref="accountDao_anno"></property> -->
+<!-- 	</bean> -->
+	
+	
+	
+	<!-- 以下式xml配置的事务管理 -->
+	<bean id="accountDao"
+		class="com.yrd.spring.jdbc_transaction.transaction_xml.dao.impl.AccountDaoImpl">
+		<property name="jdbcTemplate" ref="jdbcTemplate"></property>
+	</bean>
+
+	<!-- 目标对象 内部的方法就是切点 -->
+	<bean id="accountService"
+		class="com.yrd.spring.jdbc_transaction.transaction_xml.service.impl.AccountServiceImpl">
+		<property name="accountDao" ref="accountDao"></property>
+	</bean>
+
+	<!-- 1.配置平台事务管理器 -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+
+	<!-- 2.通知 事务的增强 -->
+<!-- 	<tx:advice id="txAdvice" -->
+<!-- 		transaction-manager="transactionManager"> -->
+		<!-- 设置事务的属性信息 -->
+<!-- 		<tx:attributes> -->
+			<!-- 对哪些方法进行配置 一个方法就是一个事务。如：对-transfer方法进行配置 -->
+			<!-- 代表切点方法的事务参数的配置 -->
+<!-- 			<tx:method name="transfer" isolation="REPEATABLE_READ" -->
+<!-- 				propagation="REQUIRED" read-only="false" /> -->
+				
+			<!-- <tx:method name="trans*" isolation="REPEATABLE_READ" propagation="REQUIRED" 
+				read-only="false"/> -->
+			<!-- <tx:method name="*" isolation="DEFAULT" propagation="REQUIRED" timeout="-1" 
+				read-only="false"/> -->
+				
+<!-- 		</tx:attributes> -->
+<!-- 	</tx:advice> -->
+
+	<!-- 3.配置事务的aop织入 -->
+<!-- 	<aop:config> -->
+<!-- 		<aop:pointcut id="txPointcut" -->
+<!-- 			expression="execution(* com.yrd.spring.jdbc_transaction.transaction_xml.service.impl.*.*(..))" /> -->
+		<!-- <aop:advisor advice-ref="txAdvice" pointcut="execution(* com.yrd.spring.jdbc_transaction.transaction_xml.service.impl.*.*(..))"/> -->
+<!-- 		<aop:advisor advice-ref="txAdvice" -->
+<!-- 			pointcut-ref="txPointcut" /> -->
+<!-- 	</aop:config> -->
+
+
+
+	<!-- <bean id="dataSource" -->
+	<!-- class="com.alibaba.druid.pool.DruidDataSource"> -->
+	<!-- <property name="driverClassName" -->
+	<!-- value="com.mysql.jdbc.Driver"></property> -->
+	<!-- <property name="url" -->
+	<!-- value="jdbc:mysql://localhost:3306/day14"></property> -->
+	<!-- <property name="username" value="root"></property> -->
+	<!-- <property name="password" value="root"></property> -->
+	<!-- </bean> -->
+
+</beans>

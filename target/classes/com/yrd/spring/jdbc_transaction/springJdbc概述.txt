@@ -1,0 +1,27 @@
+1.导入spring-jdbc和spring-tx坐标
+
+声明式事务控制的配置要点：
+1.平台事务管理器配置
+2.事务通知的配置
+3.事务aop织入的配置
+
+注解式事务控制注意：
+平台事务管理器配置（xml方式）
+事务通知配置（@Transactional注解配置）
+
+	<!-- 1.使用注解的事务管理需要组件扫描 -->
+	<context:component-scan base-package="com.yrd.spring.jdbc_transaction.transaction_anno"/>
+	<!-- 2.事务的注解驱动 -->
+	<tx:annotation-driven/>
+	
+	<!-- 3.配置平台事务管理器 -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+
+1.使用@Triansactional在需要进行事务控制的类或方法上修饰，注解可用的属性同xml配置方式，
+例如 隔离级别、传播行为等。
+2.注解使用在类上，那么该类下的所有方法都使用同一套注解参数配置。
+3.使用在方法上，不同的方法可以采用不同的事务参数配置，一个方法就是一个事务。
+4.Xml配置文件中要开启事务的注解驱动<tx:annotation-driven/>
